@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, session, jsonify
+from flask import Flask, request, redirect, render_template, session
 import mysql.connector
 
 connection = mysql.connector.connect(
