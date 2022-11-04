@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>會員登入</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='logIn.css')}}" />
+    </head>
+    <body  >
+        <h1>歡迎光臨，這是會員頁</h1>
+        <h2>{{message}},歡迎登入系統</h2>
+        <form action="/signOut" style="text-align:center";>
+            <input type="submit" value="登出系統" /> 
+        </form><br>
+        <!-- <h2>留言留言留言</h2>
+        <form action="content" method="POST" style="text-align: center">
+            內容&nbsp;
+            <input type="text" value="第一次留言" name="content" >
+            <input type="submit" value="送出">
+        </form>
+        <h3>{{user}}{{content}}</h3>
+         -->
+         <h2>查詢會員姓名</h2>
+         <form action="/api/member" style="text-align: center">
+            <input type="text"  name="username" id="cheakUsername">
+         </form>
+         <div class="button">
+             <button onclick="getData()" >查詢</button>
+
+         </div>
+         <h2 id="flashUsername"></h2>
+         <br>
+         <h2>更新姓名</h2>
+         <form action="/api/member" style="text-align: center">
+            <input type="text"  name="username" id="newName">
+         </form>
+         <div class="button">
+             <button onclick="patchData()">更新</button>
+
+         </div>
+         <h2 id="flashNewName"></h2>
+         
+    </body>
+    <script>
+        let result = document.querySelector("#flashUsername");
+        let result2 = document.querySelector("#flashNewName");
+        function getData(){
+            let username = document.getElementById("cheakUsername").value
+            fetch("http://127.0.0.1:3000/api/member?username="+username)
+            .then(function(response){
+                return response.json();
+            })
+            .then(function(data){
+                let flash = data.data
+                if (flash==null){
+                result.innerHTML = "無此會員"
+                }else{
+                result.innerHTML = flash.name + "(" + flash.username + ")"
+                }
+
+            })
+        };
+        function patchData(){
+            let username = document.getElementById("newName").value
+            fetch("http://127.0.0.1:3000/api/member?username="+username,
+            {
+                method:"PATCH",
+                headers: new Headers({"Content-type":"application/json"})
+                // headers: new Headers({'Content-type':'happyHalloween'})
+            })
+            .then(function(response){
+                return response.json();
+            })
+            .then(function(data){
+                let flash = data.data
+                if(flash==null){
+                    result2.innerHTML = "更新失敗"
+                }else{
+                    result2.innerHTML = "更新成功"
+                }
+            })
+        };
+        
+        
+    </script>
+</html>
