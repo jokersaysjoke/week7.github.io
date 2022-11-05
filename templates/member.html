@@ -30,7 +30,7 @@
          <h2 id="flashUsername"></h2>
          <br>
          <h2>更新姓名</h2>
-         <form action="/api/member" style="text-align: center">
+         <form action="/api/member" method="PATCH" style="text-align: center">
             <input type="text"  name="username" id="newName">
          </form>
          <div class="button">
@@ -51,11 +51,8 @@
             })
             .then(function(data){
                 let flash = data.data
-                if (flash==null){
-                result.innerHTML = "無此會員"
-                }else{
-                result.innerHTML = flash.name + "(" + flash.username + ")"
-                }
+                if (flash != null){result.innerHTML = flash.name + "(" + flash.username + ")"}
+                else{result.innerHTML = "無此會員"}
 
             })
         };
@@ -65,19 +62,16 @@
             {
                 method:"PATCH",
                 headers: new Headers({"Content-type":"application/json"})
-                // headers: new Headers({'Content-type':'happyHalloween'})
             })
             .then(function(response){
                 return response.json();
             })
             .then(function(data){
-                let flash = data.data
-                if(flash==null){
-                    result2.innerHTML = "更新失敗"
-                }else{
-                    result2.innerHTML = "更新成功"
-                }
+                if(data.ok){result2.innerHTML = "更新成功"}
+                else if(data.error){result2.innerHTML = "更新失敗"}
+                else{result2.innerHTML = "連線錯誤"}
             })
+            
         };
         
         

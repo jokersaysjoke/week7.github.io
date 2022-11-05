@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, session
+from flask import Flask, request, redirect, render_template, session,jsonify
 import mysql.connector
 
 connection = mysql.connector.connect(
@@ -97,32 +97,30 @@ def error():
 #API
 @app.route("/api/member", methods=['GET','PATCH'])
 def api():
-    if 'password' in session:
-        username = request.args.get("username")
-        cursor.execute("SELECT * FROM MEMBER WHERE USERNAME = %s", (username,))
-        record = cursor.fetchone()
-        if request.method=="GET":
-            if username in record:
-                memberID=record[0]
-                name=record[1]
-                username=record[2]
-                return {"data":{"id":memberID,"name":name,"username":username}}
-            elif username == "":
-                return {"data":None}
-            else:
-                return {"data":None}
-
-        elif request.method=="PATCH":
-            
-            if username == "":
-                return {"data":None}
-            else:
-                cursor.execute("UPDATE MEMBER SET NAME = %s WHERE NAME = %s", (username,session['userid'],))
-                connection.commit()
-                return {"data":username}
-    else:
-        return {"data":None}
-    
+    username = request.args.get("username")
+    cursor.execute("SELECT * FROM MEMBER WHERE USERNAME = %s", (username,))
+    record = cursor.fetchone()
+    if request.method=="GET":
+        if username == "":
+            return {"data":None}
+        elif not record:
+            return {"data":None}
+        elif 'username' not in session:
+            return {"data":None}
+        else:
+            memberID=record[0]
+            name=record[1]
+            username=record[2]
+            return {"data":{"id":memberID,"name":name,"username":username}}
+        
+    elif request.method=="PATCH":
+        if username == "":
+            return {"error":True}
+        else:
+            cursor.execute("UPDATE MEMBER SET NAME = %s WHERE NAME = %s", (username,session['userid'],))
+            connection.commit()
+            return {"ok":True}
+        
    
 app.run(port=3000)
 
