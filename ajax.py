@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, session,jsonify
+from flask import Flask, request, redirect, render_template, session
 import mysql.connector
 
 connection = mysql.connector.connect(
@@ -50,6 +50,7 @@ def signIn():
         record = cursor.fetchone()
         if record:
             if password == record[3]:
+                session['id']=record[0]
                 session['userid']=record[1]
                 session['username']=username
                 session['password']=password
@@ -114,10 +115,12 @@ def api():
             return {"data":{"id":memberID,"name":name,"username":username}}
         
     elif request.method=="PATCH":
+        username = request.json["name"]
         if username == "":
             return {"error":True}
         else:
-            cursor.execute("UPDATE MEMBER SET NAME = %s WHERE NAME = %s", (username,session['userid'],))
+            userid=session['id']
+            cursor.execute("UPDATE MEMBER SET NAME = %s WHERE ID = %s", (username,userid))
             connection.commit()
             return {"ok":True}
         

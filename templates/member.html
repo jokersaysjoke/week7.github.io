@@ -61,6 +61,7 @@
             fetch("http://127.0.0.1:3000/api/member?username="+username,
             {
                 method:"PATCH",
+                body:JSON.stringify({name:username}),
                 headers: new Headers({"Content-type":"application/json"})
             })
             .then(function(response){
