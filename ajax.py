@@ -5,7 +5,7 @@ connection = mysql.connector.connect(
     host="localhost",
     port="3306",
     user="root",
-    password="00000000", #輸入密碼
+    password="", #輸入密碼
     database="WEBSITE"
 )
 
